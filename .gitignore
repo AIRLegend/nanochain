@@ -45,3 +45,13 @@ CMakeFiles/*
 cmake_install.cmake
 Makefile
 
+# Ignore temp build files inside CryptoPP
+
+vendor/cryptopp/CMakeFiles/*
+vendor/cryptopp/CTestTestfile.cmake
+vendor/cryptopp/Makefile
+vendor/cryptopp/cmake_install.cmake
+vendor/cryptopp/cryptopp-config-version.cmake
+vendor/cryptopp/cryptopp-targets.cmake
+
+
