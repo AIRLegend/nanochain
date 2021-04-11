@@ -30,3 +30,18 @@
 *.exe
 *.out
 *.app
+
+.DS_Store
+
+
+bin/*
+!bin/.gitkeep
+lib/*
+!lib/.gitkeep
+
+# CMake stuff
+CMakeCache.txt
+CMakeFiles/*
+cmake_install.cmake
+Makefile
+
