@@ -1,18 +1,7 @@
-
-//
-// Created by Álvaro Ibrain Rodríguez on 1/3/21.
-//
-
 #include <ios>
 #include <sstream>
 #include <iomanip>
 #include "hashing.h"
-
-
-hash::hash(void* data, size_t len) {
-    CryptoPP::SHA256 h;
-    h.CalculateDigest(hash_ptr, (unsigned  char*)data, len);
-}
 
 
 void sha256(void* in, unsigned char* out, size_t len){
@@ -20,7 +9,7 @@ void sha256(void* in, unsigned char* out, size_t len){
     h.CalculateDigest(out, (unsigned  char*)in, len);
 }
 
-/*TODO: Not very efficient but works for the moment.*/
+/*TODO: Improve this, but it works for the moment.*/
 std::string sha2str(const unsigned char *hash) {
     std::stringstream hashStr;
     for (int i=0; i<HASH_SIZE; i++) {
