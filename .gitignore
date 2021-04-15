@@ -34,6 +34,9 @@
 .DS_Store
 
 
+
+.vscode
+build/*
 bin/*
 !bin/.gitkeep
 lib/*
