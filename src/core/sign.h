@@ -18,9 +18,9 @@ public:
     bool validate(unsigned char *data, int datalen, unsigned char *signature);
 
 private:
-    CryptoPP::AutoSeededRandomPool rng;
-    CryptoPP::InvertibleRSAFunction param;
-    CryptoPP::RSA::PublicKey publicKey;
+    CryptoPP::AutoSeededRandomPool m_rng;
+    CryptoPP::InvertibleRSAFunction m_params;
+    CryptoPP::RSA::PublicKey m_publicKey;
 };
 
 class PrivKey {
@@ -32,9 +32,9 @@ public:
     unsigned char *sign(unsigned char *out, unsigned char *data, int datalen = 0);
 
 private:
-    CryptoPP::AutoSeededRandomPool rng;
-    CryptoPP::InvertibleRSAFunction params;
-    CryptoPP::RSA::PrivateKey privateKey;
+    CryptoPP::AutoSeededRandomPool m_rng;
+    CryptoPP::InvertibleRSAFunction m_params;
+    CryptoPP::RSA::PrivateKey m_privateKey;
 };
 
 struct KeyPair {

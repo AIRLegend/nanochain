@@ -4,30 +4,30 @@
 
 // PRIVATE KEY
 PrivKey::PrivKey(PrivKey &ref) :
-        privateKey(ref.params),
-        params(ref.params)
+        m_privateKey(ref.m_params),
+        m_params(ref.m_params)
 {
-    //this->rng = ref.rng;
+    //this->m_rng = ref.m_rng;
 }
 
 PrivKey::PrivKey(CryptoPP::InvertibleRSAFunction &params):
-    privateKey(params),
-    params(params)
+    m_privateKey(params),
+    m_params(params)
 {
-    //params.GenerateRandomWithKeySize(*this->rng, 1024);
+    //params.GenerateRandomWithKeySize(*this->m_rng, 1024);
 
 }
 
 PrivKey::PrivKey(unsigned char* key, size_t keysize)
 {
     CryptoPP::ArraySource arsource(key, keysize, true);
-    privateKey.Load(arsource);
+    m_privateKey.Load(arsource);
 }
 
 unsigned char * PrivKey::sign(unsigned char *out, unsigned char *data, int datalen) {
-    CryptoPP::RSASSA_PKCS1v15_SHA_Signer privkeySigner(privateKey);
+    CryptoPP::RSASSA_PKCS1v15_SHA_Signer privkeySigner(m_privateKey);
     //unsigned char *signature = new unsigned char[SIGNATURE_LEN];
-    privkeySigner.SignMessage(rng, data, datalen, out);
+    privkeySigner.SignMessage(m_rng, data, datalen, out);
     return out;
 }
 
@@ -35,31 +35,31 @@ unsigned char * PrivKey::sign(unsigned char *out, unsigned char *data, int datal
 // PUBLIC KEY
 
 PubKey::PubKey(PubKey &ref):
-    publicKey(ref.param),
-    param()
+    m_publicKey(ref.m_params),
+    m_params()
 {
-    ref.param.GetThisObject(param);
+    ref.m_params.GetThisObject(m_params);
 }
 
 PubKey::PubKey(CryptoPP::InvertibleRSAFunction &params):
-    publicKey(params),
-    param(params)
+    m_publicKey(params),
+    m_params(params)
 {
     // Set internal PK representation
     CryptoPP::ArraySink buf_pub = CryptoPP::ArraySink(PUB, 1024);
-    publicKey.DEREncode(buf_pub);
+    m_publicKey.DEREncode(buf_pub);
     buf_pub.MessageEnd();
 }
 
 PubKey::PubKey(unsigned char* key, size_t keysize):
-    publicKey()
+    m_publicKey()
 {
     CryptoPP::ArraySource arsource(key, keysize, true);
-    publicKey.Load(arsource);
+    m_publicKey.Load(arsource);
 }
 
 bool PubKey::validate(unsigned char *data, int datalen, unsigned char *signature) {
-    CryptoPP::RSASSA_PKCS1v15_SHA_Verifier verifierPub(publicKey);
+    CryptoPP::RSASSA_PKCS1v15_SHA_Verifier verifierPub(m_publicKey);
     bool valid = verifierPub.VerifyMessage(data,
                                            datalen,
                                            signature,
