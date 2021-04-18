@@ -27,6 +27,7 @@ add_library(nanochain_core
             src/core/transaction.cpp
             src/core/block.cpp
             src/core/serializing.cpp
+            src/core/messaging.h
             )
 target_link_libraries(nanochain_core cryptopp-static)
 

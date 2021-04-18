@@ -1,6 +1,7 @@
 #ifndef NANOCHAIN_BLOCK_H
 #define NANOCHAIN_BLOCK_H
 
+#include <vector>
 #include <cstdint>
 #include "core/transaction.h"
 #include "core/hashing.h"
