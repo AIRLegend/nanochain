@@ -6,12 +6,13 @@
 #include "core/block.h"
 #include "transaction_pool.h"
 #include "block_pool.h"
+#include "listen_server.h"
 
 #include "json.hpp"
 
 using json = nlohmann::json;
 
-class Node 
+class Node : public IServerSub
 {
 public:
     bool validateBlock(const Block &blck);
@@ -19,6 +20,10 @@ public:
     std::shared_ptr<BlockPool> pool;
     std::shared_ptr<TransactionPool> pool;
     std::vector<Block> chain;
+
+     // Server responses callbacks. (IServerSub)
+    json onNewBlock(const std::string new_block) override;
+    json onBlockRequest(const std::string blockHash) override;
 
 private:
     const std::shared_ptr<Block> findBlock(const unsigned char *hash);
