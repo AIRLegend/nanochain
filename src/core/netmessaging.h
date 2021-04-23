@@ -1,5 +1,5 @@
-#ifndef NANOCHAIN_MESSAGING_H
-#define NANOCHAIN_MESSAGING_H
+#ifndef NANOCHAIN_NETMESSAGING_H
+#define NANOCHAIN_NETMESSAGING_H
 
 #include "json.hpp"
 
@@ -26,6 +26,6 @@ struct NetResponse {
 };
 
 }; //namespace networking
-#endif //NANOCHAIN_MESSAGING_H
+#endif //NANOCHAIN_NETMESSAGING_H
 
 
