@@ -20,7 +20,7 @@ public:
 class ListenServer {
 public:
 
-    ListenServer(std::string listen_address="tcp://0.0.0.0:5556");
+    ListenServer(std::string listen_address);
     ~ListenServer();
 
     void start();
@@ -32,9 +32,9 @@ public:
 
 
 private:
-    std::shared_ptr<IServerSub> sub;
+    std::shared_ptr<IServerSub> sub = nullptr;
 
-    std::string lister_addr;
+    std::string listen_addr;
 
     bool shouldListen = false;
 

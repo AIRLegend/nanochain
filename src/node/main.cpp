@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+#include <memory>
+
 int main()
 {
     /*unsigned  char* hashout2 = new unsigned  char[HASH_SIZE];
@@ -12,11 +14,10 @@ int main()
     sha256((void *)message.data(), hashout2, message.length());
     std::cout << "HASH: " << sha2str(hashout2) << std::endl;*/
 
-    ListenServer server;
-    std::shared_ptr<Node> n = std::make_shared<Node>();
+    ListenServer server("tcp://0.0.0.0:5556");
+    std::shared_ptr<IServerSub> n = std::make_shared<Node>();
 
     server.subscribe(n);
-
 
     return 0;
 }

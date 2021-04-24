@@ -5,13 +5,14 @@
 
 ListenServer::ListenServer(std::string listen_address):
     sock_listen(ctx, zmq::socket_type::rep),
-    lister_addr(listen_address)
+    listen_addr(listen_address)
 {
 
 }
 
 
-ListenServer::~ListenServer() {}
+ListenServer::~ListenServer() {
+}
 
 
 
@@ -59,13 +60,13 @@ void ListenServer::message_handler(const std::string &message) {
 
 
 void ListenServer::start() {
-    sock_listen.bind(lister_addr);
+    sock_listen.bind(listen_addr);
     shouldListen = true;
     listener_thread = std::make_unique<std::thread>(&ListenServer::listen, this);
 }
 
 void ListenServer::stop() {
-    sock_listen.unbind(lister_addr);
+    sock_listen.unbind(listen_addr);
     shouldListen = false;
     //listener_thread->join();
     auto h = listener_thread->native_handle();
@@ -74,6 +75,7 @@ void ListenServer::stop() {
 
 void ListenServer::subscribe(std::shared_ptr<IServerSub> sub) {
     this->sub = sub;
+    std::cout << "unsub!" << std::endl;
 }
 
 

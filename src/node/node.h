@@ -6,19 +6,25 @@
 #include "core/block.h"
 #include "transaction_pool.h"
 #include "block_pool.h"
-#include "listen_server.h"
+
 
 #include "json.hpp"
+
+#include "listen_server.h"
 
 using json = nlohmann::json;
 
 class Node : public IServerSub
 {
 public:
+
+    Node();
+    ~Node();
+
     bool validateBlock(const Block &blck);
 
     std::shared_ptr<BlockPool> pool;
-    std::shared_ptr<TransactionPool> pool;
+    std::shared_ptr<TransactionPool> pooltx;
     std::vector<Block> chain;
 
      // Server responses callbacks. (IServerSub)
