@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <memory>
+#include<unistd.h>
 
 int main()
 {
@@ -18,6 +19,12 @@ int main()
     std::shared_ptr<IServerSub> n = std::make_shared<Node>();
 
     server.subscribe(n);
+
+    server.start();
+
+    sleep(100);
+
+    server.stop();
 
     return 0;
 }

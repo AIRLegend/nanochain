@@ -43,7 +43,7 @@ json Node::onNewBlock(const std::string new_block) {
     this->chain.push_back(b);
     std::cout << "NEW BLOCK ADDED TO THE CHAIN! - LENGTH=" << chain.size()  << std::endl;
 
-    
+    return blk_json;
 }
 
 json Node::onBlockRequest(const std::string blockHash) {

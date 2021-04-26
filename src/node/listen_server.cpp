@@ -17,6 +17,7 @@ ListenServer::~ListenServer() {
 
 
 void ListenServer::listen() {
+    std::cout << "[SERVER] Start listening" << std::endl;
     while(shouldListen) {
         std::vector<zmq::message_t> recv_msgs;
         const auto ret = zmq::recv_multipart(sock_listen, std::back_inserter(recv_msgs));
@@ -75,7 +76,7 @@ void ListenServer::stop() {
 
 void ListenServer::subscribe(std::shared_ptr<IServerSub> sub) {
     this->sub = sub;
-    std::cout << "unsub!" << std::endl;
+    std::cout << "Added Node handler." << std::endl;
 }
 
 
