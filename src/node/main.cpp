@@ -8,8 +8,17 @@
 #include <memory>
 #include<unistd.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 int main()
 {
+    // Setting up logger
+    auto console = spdlog::stdout_color_mt("console");
+    
+
+    spdlog::get("console")->info("Starting up a Nanochain Node");
+
     /*unsigned  char* hashout2 = new unsigned  char[HASH_SIZE];
     std::string message = "abcdefghijklmnopqrstuvwxyz";
     sha256((void *)message.data(), hashout2, message.length());
@@ -22,7 +31,7 @@ int main()
 
     server.start();
 
-    sleep(100);
+    sleep(5);
 
     server.stop();
 

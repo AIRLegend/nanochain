@@ -13,8 +13,8 @@
 class IServerSub 
 {
 public:
-    virtual json onNewBlock(const std::string new_block) = 0;
-    virtual json onBlockRequest(const std::string blockHash) = 0;
+    virtual void onNewBlock(const std::string new_block, networking::NetResponse& response) = 0;
+    virtual void onBlockRequest(const std::string blockHash, networking::NetResponse& response) = 0;
 };
 
 class ListenServer {
@@ -26,7 +26,7 @@ public:
     void start();
     void stop();
     std::string build_msg(const std::string& payload, networking::OP_TYPE op);
-    void message_handler(const std::string& message);
+    void message_handler(const std::string& message, networking::NetResponse& response);
     void listen();
     void subscribe(std::shared_ptr<IServerSub> sub);
 

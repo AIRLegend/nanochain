@@ -28,8 +28,8 @@ public:
     std::vector<Block> chain;
 
      // Server responses callbacks. (IServerSub)
-    json onNewBlock(const std::string new_block) override;
-    json onBlockRequest(const std::string blockHash) override;
+    void onNewBlock(const std::string new_block, networking::NetResponse& response) override;
+    void onBlockRequest(const std::string blockHash, networking::NetResponse& response) override;
 
 private:
     const std::shared_ptr<Block> findBlock(const unsigned char *hash);

@@ -1,6 +1,8 @@
 #include "node/listen_server.h"
 #include "core/netmessaging.h"
 
+#include "spdlog/spdlog.h"
+
 #include <iostream>
 
 ListenServer::ListenServer(std::string listen_address):
@@ -17,7 +19,8 @@ ListenServer::~ListenServer() {
 
 
 void ListenServer::listen() {
-    std::cout << "[SERVER] Start listening" << std::endl;
+    spdlog::get("console")->info("[SERVER] Start listening");
+
     while(shouldListen) {
         std::vector<zmq::message_t> recv_msgs;
         const auto ret = zmq::recv_multipart(sock_listen, std::back_inserter(recv_msgs));
@@ -30,7 +33,8 @@ void ListenServer::listen() {
         std::cout << "\t" << recv_msgs[0].to_string()<< std::endl;
 
         // PROC_MESSAGE
-        message_handler(recv_msgs[0].to_string());
+        networking::NetResponse response;
+        message_handler(recv_msgs[0].to_string(), response);
 
         // RESPONSE TO CLIENT
         std::string resp = recv_msgs[0].to_string();
@@ -41,7 +45,8 @@ void ListenServer::listen() {
 }
 
 
-void ListenServer::message_handler(const std::string &message) {
+void ListenServer::message_handler(const std::string &message, 
+                                   networking::NetResponse& response) {
     using namespace networking;
     json json_msg = json::parse(message);
     json payload_json = json_msg["payload"];
@@ -49,14 +54,17 @@ void ListenServer::message_handler(const std::string &message) {
 
     switch (msg_type) {
         case OP_BLOCK_REQ:            
-            sub->onBlockRequest(payload_json["hash"]);
+            sub->onBlockRequest(payload_json["hash"], response);
             break;
         case OP_BLOCK_ANNOUNCE:
-            sub->onNewBlock(payload_json.dump());
+            sub->onNewBlock(payload_json.dump(), response);
             break;
         default:
             break;
     }
+
+    // send response
+    //
 }
 
 
@@ -72,11 +80,12 @@ void ListenServer::stop() {
     //listener_thread->join();
     auto h = listener_thread->native_handle();
     pthread_cancel(h);
+    spdlog::get("console")->info("[SERVER] Stopped listening");
 }
 
 void ListenServer::subscribe(std::shared_ptr<IServerSub> sub) {
     this->sub = sub;
-    std::cout << "Added Node handler." << std::endl;
+    spdlog::get("console")->info("[SERVER] Registered response handler.");
 }
 
 

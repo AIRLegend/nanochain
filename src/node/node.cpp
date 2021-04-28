@@ -3,6 +3,8 @@
 #include "core/block.h"
 #include "core/serializing.h"
 
+#include "spdlog/spdlog.h"
+
 Node::Node() {}
 
 Node::~Node() {}
@@ -34,7 +36,7 @@ bool Node::validateBlock(const Block &blck) {
 
 
 // Server sub callbacks
-json Node::onNewBlock(const std::string new_block) {
+void Node::onNewBlock(const std::string new_block, networking::NetResponse& response) {
     json blk_json = json::parse(new_block);
     Block b = blockFromJSON(blk_json);
 
@@ -42,17 +44,19 @@ json Node::onNewBlock(const std::string new_block) {
 
     this->chain.push_back(b);
     std::cout << "NEW BLOCK ADDED TO THE CHAIN! - LENGTH=" << chain.size()  << std::endl;
-
-    return blk_json;
+    response.status = networking::MESSAGE_STATUS::OK;
 }
 
-json Node::onBlockRequest(const std::string blockHash) {
+void Node::onBlockRequest(const std::string blockHash, networking::NetResponse& response) {
     if (blockHash.size() == 0) {
-        return blocksToJSON(this->chain);
+        response.data = blocksToJSON(this->chain);
+        response.status = networking::MESSAGE_STATUS::OK;
     } else {
         unsigned char hashbl[HASH_SIZE];
         stringToBytes(blockHash, hashbl);
         auto blk = findBlock(hashbl);
-        return  blockToJSON(*blk);
+        // TODO: Check nullptr
+        response.data = blockToJSON(*blk);
+        response.status = networking::MESSAGE_STATUS::OK;
     }
 }

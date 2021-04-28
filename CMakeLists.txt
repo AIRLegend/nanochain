@@ -19,6 +19,9 @@ find_library(ZeroMQ_LIBRARY
         )
 #######
 
+# Logging
+add_subdirectory(vendor/spdlog)
+find_package(spdlog)
 
 
 include_directories(/usr/local/Cellar/zeromq/4.3.4/include/)
@@ -57,3 +60,4 @@ add_executable(node
 
 target_link_libraries(node nanochain_core)
 target_link_libraries(node ${ZeroMQ_LIBRARY})
+target_link_libraries(node spdlog)
