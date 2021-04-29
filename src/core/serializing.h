@@ -10,6 +10,7 @@ using json = nlohmann::json;
 
 // Parsing to JSON format
 json transactionToJSON(const Transaction& tx);
+json transactionsToJSON(const std::vector<Transaction> &txs);
 json blockToJSON(const Block& block);
 json blocksToJSON(const std::vector<Block> &blocks);
 

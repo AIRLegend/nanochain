@@ -14,7 +14,9 @@ class IServerSub
 {
 public:
     virtual void onNewBlock(const std::string new_block, networking::NetResponse& response) = 0;
-    virtual void onBlockRequest(const std::string blockHash, networking::NetResponse& response) = 0;
+    virtual void onBlockRequest(const std::string block_hash, networking::NetResponse& response) = 0;
+    virtual void onNewTx(const std::string new_tx, networking::NetResponse& response) = 0;
+    virtual void onTxRequest(networking::NetResponse& response) = 0;
 };
 
 class ListenServer {

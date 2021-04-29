@@ -29,15 +29,14 @@ void ListenServer::listen() {
             return;
         }
 
-        //std::cout << "Got " << *ret << " messages" << std::endl;
-        //std::cout << "\t" << recv_msgs[0].to_string()<< std::endl;
+        spdlog::get("console")->debug("[SERVER] Got a new message!");
 
         // PROC_MESSAGE
         networking::NetResponse response;
         message_handler(recv_msgs[0].to_string(), response);
 
         // RESPONSE TO CLIENT
-        std::string resp = networking::to_string(response); //= recv_msgs[0].to_string();
+        std::string resp = networking::to_string(response);
         zmq::message_t message(resp.size());
         std::memcpy (message.data(), resp.data(), resp.size());
         sock_listen.send(message, zmq::send_flags::dontwait);
@@ -58,6 +57,12 @@ void ListenServer::message_handler(const std::string &message,
             break;
         case OP_BLOCK_ANNOUNCE:
             sub->onNewBlock(payload_json.dump(), response);
+            break;
+        case OP_BROADCAST_TX:
+            sub->onNewTx(payload_json.dump(), response);
+            break;
+        case OP_MEMPOOL_REQUEST:
+            sub->onTxRequest(response);
             break;
         default:
             break;

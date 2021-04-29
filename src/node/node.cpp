@@ -40,23 +40,42 @@ void Node::onNewBlock(const std::string new_block, networking::NetResponse& resp
     json blk_json = json::parse(new_block);
     Block b = blockFromJSON(blk_json);
 
-    // Check whether new block is valid
-
+    // TODO: Check whether new block is valid
     this->chain.push_back(b);
-    std::cout << "NEW BLOCK ADDED TO THE CHAIN! - LENGTH=" << chain.size()  << std::endl;
+
+    // Remove transactions from the mempool
+    ;
+
+    spdlog::get("console")->info("[NODE] New block added to the chain. Size: " +  chain.size());
     response.status = networking::MESSAGE_STATUS::OK;
 }
 
-void Node::onBlockRequest(const std::string blockHash, networking::NetResponse& response) {
-    if (blockHash.size() == 0) {
+void Node::onBlockRequest(const std::string block_hash, networking::NetResponse& response) {
+    if (block_hash.size() == 0) {
         response.data = blocksToJSON(this->chain);
         response.status = networking::MESSAGE_STATUS::OK;
     } else {
         unsigned char hashbl[HASH_SIZE];
-        stringToBytes(blockHash, hashbl);
+        stringToBytes(block_hash, hashbl);
         auto blk = findBlock(hashbl);
         // TODO: Check nullptr
         response.data = blockToJSON(*blk);
         response.status = networking::MESSAGE_STATUS::OK;
     }
+}
+
+void Node::onNewTx(const std::string newTx, networking::NetResponse& response) {
+    // TODO: Implement
+    // Check everything seems correct
+
+    // Add to the mempool
+    json json_tx = json::parse(newTx);
+    pooltx->add(transactionFromJSON(json_tx));
+    response.status = networking::MESSAGE_STATUS::OK;
+}
+
+void Node::onTxRequest(networking::NetResponse& response) {
+    // TODO: Return the entire mempool
+    response.data = transactionsToJSON(this->pooltx->getTxs());
+    response.status = networking::MESSAGE_STATUS::OK;
 }

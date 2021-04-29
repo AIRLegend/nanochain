@@ -1,9 +1,10 @@
 #include "node/transaction_pool.h"
 #include "core/hashing.h"
 
+
 int TransactionPool::get(const Transaction& tx) {
-    for (int i = 0; i < txs.size(); ++i) {
-        if (compare(tx, txs.at(i))) {
+    for (int i = 0; i < m_txs.size(); ++i) {
+        if (compare(tx, m_txs.at(i))) {
             return i;
         }
     }
@@ -15,7 +16,7 @@ bool TransactionPool::add(const Transaction& tx) {
     if (idx_tx >= 0)
         return false;
 
-    txs.push_back(tx);
+    m_txs.push_back(tx);
     return true;
 }
 
@@ -23,8 +24,13 @@ bool TransactionPool::remove(const Transaction& tx) {
     int idx_tx = get(tx);
     if (idx_tx < 0)
         return false;
-    txs.erase(txs.begin() + idx_tx);
+    m_txs.erase(m_txs.begin() + idx_tx);
     return true;
+}
+
+std::vector<Transaction>& TransactionPool::getTxs() 
+{
+    return m_txs;
 }
 
 bool TransactionPool::compare(const Transaction& t1, const Transaction& t2) {

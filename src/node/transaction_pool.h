@@ -10,9 +10,10 @@ public:
     int get(const Transaction& tx);
     bool add(const Transaction& tx);
     bool remove(const Transaction& tx);
+    std::vector<Transaction>& getTxs();
 
 private:
-    std::vector<Transaction> txs;
+    std::vector<Transaction> m_txs;
     bool compare(const Transaction& t1, const Transaction& t2);
 };
 

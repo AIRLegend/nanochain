@@ -14,6 +14,17 @@ json transactionToJSON(const Transaction& tx)
     return repr;
 }
 
+json transactionsToJSON(const std::vector<Transaction> &txs)
+{
+    std::vector<json> reprs;
+
+    for (Transaction tx: txs) {
+        reprs.push_back(transactionToJSON(tx));
+    }
+    
+    return reprs;
+}
+
 json blockToJSON(const Block& block)
 {
     std::string  prevHash = bytesToString(block.prev_hash);
