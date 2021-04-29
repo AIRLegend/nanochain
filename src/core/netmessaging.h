@@ -25,6 +25,8 @@ struct NetResponse {
     json data;
 };
 
+std::string to_string(NetResponse& resp);
+
 }; //namespace networking
 #endif //NANOCHAIN_NETMESSAGING_H
 

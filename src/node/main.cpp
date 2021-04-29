@@ -31,7 +31,7 @@ int main()
 
     server.start();
 
-    sleep(5);
+    sleep(100);
 
     server.stop();
 

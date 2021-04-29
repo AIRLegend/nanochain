@@ -14,7 +14,8 @@ The only purpose of this implementation is to better understand the foundations 
 
 ``` bash
 git clone git@github.com:AIRLegend/nanochain.git && cd nanochain
-cmake .
+mkdir build && cd build
+cmake ..
 make
 ```
 
@@ -39,7 +40,7 @@ It's divided into several targets:
 Static library containing common network functionalities (definition and implementation of components like serialization, blocks, signing, hashing or transactions). All programs made for this network may link this target.
 
 ### node
-Executable for running a node of the network, incharged of receiving and broadcasting transactions and blocks, maintain a local copy of the blockchain and validate it.
+Executable for running a node of the network, incharged of receiving and broadcasting transactions and blocks, maintaining a local copy of the blockchain and validating it.
 
 ### miner
 Program which queries the nodes for new transactions and creates (and broadcasts) new blocks using the PoW approximation.

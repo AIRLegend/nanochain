@@ -29,15 +29,15 @@ void ListenServer::listen() {
             return;
         }
 
-        std::cout << "Got " << *ret << " messages" << std::endl;
-        std::cout << "\t" << recv_msgs[0].to_string()<< std::endl;
+        //std::cout << "Got " << *ret << " messages" << std::endl;
+        //std::cout << "\t" << recv_msgs[0].to_string()<< std::endl;
 
         // PROC_MESSAGE
         networking::NetResponse response;
         message_handler(recv_msgs[0].to_string(), response);
 
         // RESPONSE TO CLIENT
-        std::string resp = recv_msgs[0].to_string();
+        std::string resp = networking::to_string(response); //= recv_msgs[0].to_string();
         zmq::message_t message(resp.size());
         std::memcpy (message.data(), resp.data(), resp.size());
         sock_listen.send(message, zmq::send_flags::dontwait);
