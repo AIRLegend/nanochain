@@ -2,6 +2,9 @@
 #include "core/hashing.h"
 
 
+TransactionPool::TransactionPool()
+{}
+
 int TransactionPool::get(const Transaction& tx) {
     for (int i = 0; i < m_txs.size(); ++i) {
         if (compare(tx, m_txs.at(i))) {
@@ -15,8 +18,7 @@ bool TransactionPool::add(const Transaction& tx) {
     int idx_tx = get(tx);
     if (idx_tx >= 0)
         return false;
-
-    m_txs.push_back(tx);
+    this->m_txs.push_back(tx);
     return true;
 }
 

@@ -6,7 +6,7 @@
 #include "core/block.h"
 #include "transaction_pool.h"
 #include "block_pool.h"
-
+#include "node/peer.h"
 
 #include "json.hpp"
 
@@ -22,12 +22,26 @@ public:
     ~Node();
 
     bool validateBlock(const Block &blck);
+    bool addBlock(const Block &blck);
 
-    std::shared_ptr<BlockPool> pool;
-    std::shared_ptr<TransactionPool> pooltx;
-    std::vector<Block> chain;
+    BlockPool m_blockpool;
+    TransactionPool m_txpool;
+    std::vector<Block> m_chain;
 
-     // Server responses callbacks. (IServerSub)
+    std::vector<NodePeer> m_peers;
+    
+    /**
+    * Client methods (for talking to other nodes)
+    */
+    //Requests all the blocks the peers have
+    void requestBlocks();
+    // Asks for the mempool of other nodes
+    void requestTxs();
+
+
+    /**
+    * Server responses callbacks. (IServerSub)
+    */
     void onNewBlock(const std::string new_block, networking::NetResponse& response) override;
     void onBlockRequest(const std::string block_hash, networking::NetResponse& response) override;
     void onNewTx(const std::string new_tx, networking::NetResponse& response) override;

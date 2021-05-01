@@ -10,6 +10,8 @@ public:
                 unsigned char* to,
                 uint64_t amount=0);
 
+    Transaction(const Transaction& tx);
+
     unsigned char m_signature[SIGNATURE_LEN];
     unsigned char m_from[SIGNATURE_LEN];
     unsigned char m_to[SIGNATURE_LEN];

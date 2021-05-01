@@ -15,9 +15,16 @@ Transaction::Transaction(
 
     // The transaction must be manually signed
     memset(m_signature, 0, SIGNATURE_LEN);
+    m_amount = amount;
 }
 
-
+Transaction::Transaction(const Transaction& tx) 
+{
+    memcpy(this->m_from, tx.m_from, SIGNATURE_LEN);
+    memcpy(this->m_to, tx.m_to, SIGNATURE_LEN);
+    memcpy(m_signature, tx.m_signature, SIGNATURE_LEN);
+    m_amount = tx.m_amount;
+}
 
 Transaction generate_dummy_transaction() {
     auto keypair_u1 = KeyFactory::buildKeyPair();

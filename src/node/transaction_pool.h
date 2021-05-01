@@ -7,6 +7,7 @@
 
 class TransactionPool {
 public:
+    TransactionPool();
     int get(const Transaction& tx);
     bool add(const Transaction& tx);
     bool remove(const Transaction& tx);

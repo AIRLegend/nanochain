@@ -7,6 +7,7 @@ class OpType(Enum):
     OP_BLOCK_SEND = 3
     OP_BLOCK_REQ = 4
     OP_BLOCK_ANNOUNCE = 5
+    OP_MEMPOOL_REQUEST = 6
 
 
 class MessageStatus(Enum):

@@ -15,16 +15,15 @@ int main()
 {
     // Setting up logger
     auto console = spdlog::stdout_color_mt("console");
-    
-
     spdlog::get("console")->info("Starting up a Nanochain Node");
 
-    /*unsigned  char* hashout2 = new unsigned  char[HASH_SIZE];
-    std::string message = "abcdefghijklmnopqrstuvwxyz";
-    sha256((void *)message.data(), hashout2, message.length());
-    std::cout << "HASH: " << sha2str(hashout2) << std::endl;*/
+    // TODO: Hardcoded peers
+    NodePeer peer;
+    peer.address = "tcp://127.0.0.1:5556";
 
-    ListenServer server("tcp://0.0.0.0:5556");
+
+    /*
+    
     std::shared_ptr<IServerSub> n = std::make_shared<Node>();
 
     server.subscribe(n);
@@ -33,7 +32,21 @@ int main()
 
     sleep(100);
 
-    server.stop();
+    server.stop();*/
+
+    
+    Node n;
+    std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);
+
+    n.m_peers.push_back(peer);
+    
+    ListenServer server("tcp://0.0.0.0:5557");
+    server.subscribe(node_ptr);
+
+    n.requestBlocks();
+    //n.requestTxs();
+
+
 
     return 0;
 }

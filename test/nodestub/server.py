@@ -1,5 +1,7 @@
 import zmq
 import time
+import json
+import netops as ops
 
 from threading import Thread
 
@@ -15,16 +17,31 @@ class NodeServer:
         self.run_thread = None
         with open(data_path, 'r') as file:
             self.raw_data = file.read()
+            self.blockchain = json.loads(self.raw_data)["payload"]
 
     def start(self):
         self.should_run = True
-        self.run_thread = Thread(target=self.loop, args=(self,))
+        self.run_thread = Thread(target=self.loop)
         self.run_thread.start()
 
     def stop(self):
         self.should_run = False
         self.run_thread.join()
         self.run_thread = None
+
+    def message_handle(self, msg):
+        message = json.loads(msg)
+        result = None
+
+        if int(message["OP"]) is ops.OpType.OP_MEMPOOL_REQUEST.value:
+            print("> Mempool request")
+            result = self.blockchain[0]["txs"]
+        elif int(message["OP"]) is ops.OpType.OP_BLOCK_REQ.value:
+            print("> Mempool request")
+            result = self.blockchain
+
+        return result
+
 
     def loop(self):
         context = zmq.Context()
@@ -33,14 +50,22 @@ class NodeServer:
 
         while self.should_run:
             #  Wait for next request from client
-            message = socket.recv()
+            message = socket.recv().decode('utf-8')
             print("Received request: %s" % message)
 
             #  Do some 'work'
-            time.sleep(self.proc_time)
+            # time.sleep(self.proc_time)
+
+            res = self.message_handle(message)
+            res_status = ops.MessageStatus.BAD
+            if res is not None:
+                res_status = ops.MessageStatus.OK
+
+            response = json.dumps({"status": res_status.value, "payload": res})
+            print(f"\t Sending: {response}")
 
             #  Send reply back to client
-            socket.send_string(self.raw_data)
+            socket.send_string(response)
 
         socket.close()
         socket.unbind()
