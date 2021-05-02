@@ -37,11 +37,16 @@ class NodeServer:
             print("> Mempool request")
             result = self.blockchain[0]["txs"]
         elif int(message["OP"]) is ops.OpType.OP_BLOCK_REQ.value:
-            print("> Mempool request")
-            result = self.blockchain
+            print("> Block request")
+            if message["payload"]["hash"] == -1:
+                result = self.blockchain[-1]
+            else:
+                result = self.blockchain
+        elif int(message["OP"]) is ops.OpType.OP_BLOCK_ANNOUNCE.value:
+            print(">Block announce")
+            self.blockchain.append(message["payload"])
 
         return result
-
 
     def loop(self):
         context = zmq.Context()

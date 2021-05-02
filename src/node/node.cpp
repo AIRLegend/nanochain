@@ -111,7 +111,14 @@ void Node::onNewBlock(const std::string new_block, networking::NetResponse& resp
 
 void Node::onBlockRequest(const std::string block_hash, networking::NetResponse& response) {
     if (block_hash.size() == 0) {
+        // Empty hash -> Return all blocks
+        // TODO: This is crazy, for real usage this should be removed.
         response.data = blocksToJSON(this->m_chain);
+        response.status = networking::MESSAGE_STATUS::OK;
+    } else if(block_hash.compare("-1") == 0){
+        // Return only the latest accepted block
+        Block b = m_chain.back();
+        response.data = blockToJSON(b);
         response.status = networking::MESSAGE_STATUS::OK;
     } else {
         unsigned char hashbl[HASH_SIZE];

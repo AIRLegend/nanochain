@@ -31,15 +31,20 @@ void Miner::requestMempool() {
 void Miner::startMining()  {
     if(!m_should_mine) {
         m_should_mine = true;
+        //if (miner_thread != nullptr)
+        //    miner_thread.reset();
+
         miner_thread = std::make_unique<std::thread>(&Miner::mine, this);    
+        miner_thread->detach();
     }
 }
 
 void Miner::stopMining() 
 {
     m_should_mine = false;
-    auto h = miner_thread->native_handle();
-    pthread_cancel(h);
+    //auto h = miner_thread->native_handle();
+    //pthread_cancel(h);
+    miner_thread.reset();
     spdlog::get("nanominer")->info("Mining ended.");
 }
 
@@ -54,10 +59,9 @@ void Miner::broadcastBlock()
 
     for(NodePeer peer:m_peers) {
         logger->info("Sent to peer: " + peer.address);
-        //client.send(json_block, networking::OP_TYPE::OP_BLOCK_ANNOUNCE, peer.address);
+        client.send(json_block, networking::OP_TYPE::OP_BLOCK_ANNOUNCE, peer.address);
         // TODO: Handle bad request (block invalid or whatever)
     }
-    
 }
 
 void Miner::mine()  {
@@ -75,6 +79,9 @@ void Miner::mine()  {
     logger->info("Found valid hash! " + bytesToString(current_hash));
     memcpy(m_candidate.b_hash, current_hash, HASH_SIZE);
     broadcastBlock();
+    m_mempool.flush();
+    m_should_mine = false;
+    spdlog::get("nanominer")->info("Mining ended.");
 }
 
 void Miner::buildCandidateBlock()  {
