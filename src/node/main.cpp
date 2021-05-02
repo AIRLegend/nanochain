@@ -21,19 +21,6 @@ int main()
     NodePeer peer;
     peer.address = "tcp://127.0.0.1:5556";
 
-
-    /*
-    
-    std::shared_ptr<IServerSub> n = std::make_shared<Node>();
-
-    server.subscribe(n);
-
-    server.start();
-
-    sleep(100);
-
-    server.stop();*/
-
     
     Node n;
     std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);
@@ -43,10 +30,13 @@ int main()
     ListenServer server("tcp://0.0.0.0:5557");
     server.subscribe(node_ptr);
 
-    n.requestBlocks();
-    //n.requestTxs();
-
-
+    while(true)
+    {
+        n.requestBlocks();
+        n.requestTxs();
+        sleep(30);
+    }
+    
 
     return 0;
 }

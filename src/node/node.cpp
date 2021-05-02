@@ -94,9 +94,15 @@ void Node::onNewBlock(const std::string new_block, networking::NetResponse& resp
     json blk_json = json::parse(new_block);
     Block b = blockFromJSON(blk_json);
 
-    // TODO: Check whether new block is valid
-    this->m_chain.push_back(b);
+    // Attempt adding candiate block to the chain
+    bool success = addBlock(b);
 
+    if (!success) {
+        spdlog::get("console")->info("[NODE] Block " + bytesToString(b.b_hash) + " is not valid.");
+        response.status = networking::MESSAGE_STATUS::BAD;
+        return;
+    }
+    
     // TODO: Remove transactions from the mempool
 
     spdlog::get("console")->info("[NODE] New block added to the chain. Size: " +  m_chain.size());

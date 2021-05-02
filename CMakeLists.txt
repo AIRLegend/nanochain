@@ -58,6 +58,12 @@ add_executable(node
     src/node/transaction_pool.cpp
     )
 
+# Miner program
+add_executable(miner 
+    src/miner/main.cpp
+    src/miner/miner.cpp
+    )
+
 target_link_libraries(node nanochain_core)
 target_link_libraries(node ${ZeroMQ_LIBRARY})
 target_link_libraries(node spdlog)
