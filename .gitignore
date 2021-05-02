@@ -34,7 +34,7 @@
 .DS_Store
 
 
-*.pyc
+**/*.pyc
 .vscode
 build/*
 bin/*
