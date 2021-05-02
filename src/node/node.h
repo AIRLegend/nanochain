@@ -6,7 +6,7 @@
 #include "core/block.h"
 #include "transaction_pool.h"
 #include "block_pool.h"
-#include "node/peer.h"
+#include "core/peer.h"
 
 #include "json.hpp"
 

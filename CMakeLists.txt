@@ -45,6 +45,7 @@ add_library(nanochain_core
             src/core/serializing.cpp
             src/core/netmessaging.cpp
             src/core/netclient.cpp
+            src/core/peer.h
             )
 target_link_libraries(nanochain_core cryptopp-static)
 
@@ -62,8 +63,13 @@ add_executable(node
 add_executable(miner 
     src/miner/main.cpp
     src/miner/miner.cpp
+    src/miner/mempool.cpp
     )
 
 target_link_libraries(node nanochain_core)
 target_link_libraries(node ${ZeroMQ_LIBRARY})
 target_link_libraries(node spdlog)
+
+target_link_libraries(miner nanochain_core)
+target_link_libraries(miner ${ZeroMQ_LIBRARY})
+target_link_libraries(miner spdlog)
