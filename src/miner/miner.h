@@ -30,11 +30,8 @@ private:
     unsigned char m_cmp_zeros_buffer[HASH_SIZE];
     int m_curr_difficulty = 1;
     bool m_should_mine = false;
-    //std::mutex m_mine_mutex;
 
     Block m_candidate;
-
-
     
     void buildCandidateBlock();
 };

@@ -66,6 +66,13 @@ add_executable(miner
     src/miner/mempool.cpp
     )
 
+# Miner program
+add_executable(wallet 
+    src/wallet/main.cpp
+    src/wallet/wallet.cpp
+    src/wallet/config.cpp
+    )
+
 target_link_libraries(node nanochain_core)
 target_link_libraries(node ${ZeroMQ_LIBRARY})
 target_link_libraries(node spdlog)
@@ -73,3 +80,7 @@ target_link_libraries(node spdlog)
 target_link_libraries(miner nanochain_core)
 target_link_libraries(miner ${ZeroMQ_LIBRARY})
 target_link_libraries(miner spdlog)
+
+target_link_libraries(wallet nanochain_core)
+target_link_libraries(wallet ${ZeroMQ_LIBRARY})
+target_link_libraries(wallet spdlog)

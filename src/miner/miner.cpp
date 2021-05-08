@@ -31,9 +31,6 @@ void Miner::requestMempool() {
 void Miner::startMining()  {
     if(!m_should_mine) {
         m_should_mine = true;
-        //if (miner_thread != nullptr)
-        //    miner_thread.reset();
-
         miner_thread = std::make_unique<std::thread>(&Miner::mine, this);    
         miner_thread->detach();
     }
@@ -42,8 +39,8 @@ void Miner::startMining()  {
 void Miner::stopMining() 
 {
     m_should_mine = false;
-    //auto h = miner_thread->native_handle();
-    //pthread_cancel(h);
+    auto h = miner_thread->native_handle();
+    pthread_cancel(h);
     miner_thread.reset();
     spdlog::get("nanominer")->info("Mining ended.");
 }

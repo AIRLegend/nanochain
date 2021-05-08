@@ -9,11 +9,15 @@ static const int PREIMAGE_LEN = 128;
 
 class PubKey {
 public:
-    unsigned char PUB[SIGNATURE_LEN];
+    static const size_t PUBK_LEN = 160;
+    unsigned char m_bytes[PUBK_LEN];
+    
 
     PubKey(CryptoPP::InvertibleRSAFunction &params);
-    PubKey(unsigned char *key, size_t keysize = SIGNATURE_LEN);
+    PubKey(unsigned char *key, size_t keysize = PUBK_LEN);
     PubKey(PubKey &ref);
+
+    static size_t getLength();
 
     bool validate(unsigned char *data, int datalen, unsigned char *signature);
 
@@ -25,8 +29,12 @@ private:
 
 class PrivKey {
 public:
+    static const size_t PK_LEN = 632;
+
+    unsigned char m_bytes[PrivKey::PK_LEN];
+
     PrivKey(CryptoPP::InvertibleRSAFunction &params);
-    PrivKey(unsigned char *key, size_t keysize = SIGNATURE_LEN);
+    PrivKey(unsigned char *key, size_t keysize = PrivKey::PK_LEN);
     PrivKey(PrivKey &ref);
 
     unsigned char *sign(unsigned char *out, unsigned char *data, int datalen = 0);
@@ -44,7 +52,9 @@ struct KeyPair {
 
 class KeyFactory {
 public:
-    static std::unique_ptr<KeyPair> buildKeyPair();
+    static std::shared_ptr<KeyPair> buildKeyPair();
+    static std::shared_ptr<KeyPair> buildKeyPair( unsigned char* pk, 
+                                                  unsigned char* pubk);
 };
 
 #endif

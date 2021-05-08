@@ -14,13 +14,15 @@ PrivKey::PrivKey(CryptoPP::InvertibleRSAFunction &params):
     m_privateKey(params),
     m_params(params)
 {
-    //params.GenerateRandomWithKeySize(*this->m_rng, 1024);
-
+    CryptoPP::ArraySink buf_pk = CryptoPP::ArraySink(m_bytes, PK_LEN);
+    m_privateKey.DEREncode(buf_pk);
+    buf_pk.MessageEnd();
 }
 
 PrivKey::PrivKey(unsigned char* key, size_t keysize)
 {
     CryptoPP::ArraySource arsource(key, keysize, true);
+    memcpy(m_bytes, key, keysize);
     m_privateKey.Load(arsource);
 }
 
@@ -46,7 +48,7 @@ PubKey::PubKey(CryptoPP::InvertibleRSAFunction &params):
     m_params(params)
 {
     // Set internal PK representation
-    CryptoPP::ArraySink buf_pub = CryptoPP::ArraySink(PUB, 1024);
+    CryptoPP::ArraySink buf_pub = CryptoPP::ArraySink(m_bytes, PUBK_LEN);
     m_publicKey.DEREncode(buf_pub);
     buf_pub.MessageEnd();
 }
@@ -55,7 +57,13 @@ PubKey::PubKey(unsigned char* key, size_t keysize):
     m_publicKey()
 {
     CryptoPP::ArraySource arsource(key, keysize, true);
+    memcpy(m_bytes, key, keysize);
     m_publicKey.Load(arsource);
+}
+
+size_t PubKey::getLength()
+{
+    return 0;
 }
 
 bool PubKey::validate(unsigned char *data, int datalen, unsigned char *signature) {
@@ -69,15 +77,22 @@ bool PubKey::validate(unsigned char *data, int datalen, unsigned char *signature
 
 
 // KeyFactory
-std::unique_ptr<KeyPair>  KeyFactory::buildKeyPair() {
-    std::unique_ptr<CryptoPP::InvertibleRSAFunction> custom_params =
-            std::make_unique<CryptoPP::InvertibleRSAFunction>();
+std::shared_ptr<KeyPair> KeyFactory::buildKeyPair() {
+    std::shared_ptr<CryptoPP::InvertibleRSAFunction> custom_params =
+            std::make_shared<CryptoPP::InvertibleRSAFunction>();
     CryptoPP::AutoSeededRandomPool randg;
     custom_params->GenerateRandomWithKeySize(randg, 1024);
 
     std::unique_ptr<KeyPair> kp = std::make_unique<KeyPair>();
     kp->publicKey = std::make_shared<PubKey>(*custom_params);
     kp->privateKey = std::make_shared<PrivKey>(*custom_params);
+    return kp;//std::move(kp);
+}
 
-    return std::move(kp);
+std::shared_ptr<KeyPair> KeyFactory::buildKeyPair( unsigned char* pk, 
+                                                   unsigned char* pubk) {
+    std::shared_ptr<KeyPair> kp = std::make_shared<KeyPair>();
+    kp->publicKey = std::make_shared<PubKey>(pubk);
+    kp->privateKey = std::make_shared<PrivKey>(pk);
+    return kp;//std::move(kp);
 }

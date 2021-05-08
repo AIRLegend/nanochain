@@ -14,15 +14,15 @@ BlockPool::BlockPool() {
     memset(genesis.b_hash, 0, HASH_SIZE);
     memset(genesis.prev_hash, 0, HASH_SIZE);
 
-    Transaction coinbase((unsigned char*)nullptr, keypair_u1->publicKey->PUB, 10);  // Unsigned, genesis
+    Transaction coinbase((unsigned char*)nullptr, keypair_u1->publicKey->m_bytes, 10);  // Unsigned, genesis
 
 
     // u1 pays u2 5 and signs
-    Transaction t1(keypair_u1->publicKey->PUB, keypair_u2->publicKey->PUB, 5);
+    Transaction t1(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 5);
     keypair_u1->privateKey->sign(t1.m_signature, (unsigned char*)&t1, sizeof(t1));
 
     // u1 pays u3 10
-    Transaction t2(keypair_u1->publicKey->PUB, keypair_u3->publicKey->PUB, 10);
+    Transaction t2(keypair_u1->publicKey->m_bytes, keypair_u3->publicKey->m_bytes, 10);
     keypair_u1->privateKey->sign(t2.m_signature, (unsigned char*)&t2, sizeof(t2));
 
     // Add transactions to block
@@ -38,10 +38,10 @@ BlockPool::BlockPool() {
     Block block_1;
     memset(block_1.b_hash, 0, HASH_SIZE);
 
-    Transaction t3(keypair_u1->publicKey->PUB, keypair_u2->publicKey->PUB, 8);
+    Transaction t3(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 8);
     keypair_u1->privateKey->sign(t3.m_signature, (unsigned char*)&t3, sizeof(t3));
 
-    Transaction t4(keypair_u3->publicKey->PUB, keypair_u3->publicKey->PUB, 1);
+    Transaction t4(keypair_u3->publicKey->m_bytes, keypair_u3->publicKey->m_bytes, 1);
     keypair_u3->privateKey->sign(t4.m_signature, (unsigned char*)&t4, sizeof(t4));
 
 
@@ -66,11 +66,11 @@ Block BlockPool::generateBlock() {
 
 
     // u1 pays u2 5 and signs
-    Transaction t1(keypair_u1->publicKey->PUB, keypair_u2->publicKey->PUB, 5);
+    Transaction t1(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 5);
     keypair_u1->privateKey->sign(t1.m_signature, (unsigned char*)&t1, sizeof(t1));
 
     // u1 pays u3 10
-    Transaction t2(keypair_u1->publicKey->PUB, keypair_u2->publicKey->PUB, 10);
+    Transaction t2(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 10);
     keypair_u1->privateKey->sign(t2.m_signature, (unsigned char*)&t2, sizeof(t2));
 
     blck.txs.push_back(t1);

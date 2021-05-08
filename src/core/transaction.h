@@ -21,8 +21,4 @@ private:
     int m_amount;    
 };
 
-
-// dummy function for testing stuff
-Transaction generate_dummy_transaction();
-
 #endif //NANOCHAIN_TRANSACTION_H

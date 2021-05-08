@@ -25,11 +25,3 @@ Transaction::Transaction(const Transaction& tx)
     memcpy(m_signature, tx.m_signature, SIGNATURE_LEN);
     m_amount = tx.m_amount;
 }
-
-Transaction generate_dummy_transaction() {
-    auto keypair_u1 = KeyFactory::buildKeyPair();
-    auto keypair_u2 = KeyFactory::buildKeyPair();
-    Transaction t1(keypair_u1->publicKey->PUB, keypair_u2->publicKey->PUB, rand()%100 + 1);
-    keypair_u1->privateKey->sign(t1.m_signature, (unsigned char*)&t1, sizeof(t1));
-    return t1;
-}

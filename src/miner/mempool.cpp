@@ -29,6 +29,8 @@ bool Mempool::remove(const Transaction& tx) {
 }
 
 bool Mempool::flush() {
+    // TODO: Add recently added tx set so new transactions cannot
+    // be duplicated.
     m_txs.clear();
     return true;
 }
