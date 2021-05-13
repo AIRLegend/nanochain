@@ -25,10 +25,10 @@ make
 ./build/bin/node
 
 # Miner program
-(TODO)
+./build/bin/miner
 
 # Wallet program
-(TODO)
+./build/bin/wallet
 ```
 
 
