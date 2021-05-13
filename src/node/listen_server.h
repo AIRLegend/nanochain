@@ -10,12 +10,14 @@
 
 #include "core/netmessaging.h"
 
+using json = nlohmann::json;
+
 class IServerSub 
 {
 public:
-    virtual void onNewBlock(const std::string new_block, networking::NetResponse& response) = 0;
-    virtual void onBlockRequest(const std::string block_hash, networking::NetResponse& response) = 0;
-    virtual void onNewTx(const std::string new_tx, networking::NetResponse& response) = 0;
+    virtual void onNewBlock(const json& new_block, networking::NetResponse& response) = 0;
+    virtual void onBlockRequest(const json& block_hash, networking::NetResponse& response) = 0;
+    virtual void onNewTx(const json& new_tx, networking::NetResponse& response) = 0;
     virtual void onTxRequest(networking::NetResponse& response) = 0;
 };
 

@@ -25,10 +25,11 @@ int main()
     Node n;
     std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);
 
-    n.m_peers.push_back(peer);
+    //n.m_peers.push_back(peer);
     
     ListenServer server("tcp://0.0.0.0:5557");
     server.subscribe(node_ptr);
+    server.start();
 
     while(true)
     {
@@ -36,6 +37,8 @@ int main()
         n.requestTxs();
         sleep(30);
     }
+
+    server.stop();
     
 
     return 0;

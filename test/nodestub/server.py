@@ -18,6 +18,7 @@ class NodeServer:
         with open(data_path, 'r') as file:
             self.raw_data = file.read()
             self.blockchain = json.loads(self.raw_data)["payload"]
+        self.mempool = []
 
     def start(self):
         self.should_run = True
@@ -45,6 +46,11 @@ class NodeServer:
         elif int(message["OP"]) is ops.OpType.OP_BLOCK_ANNOUNCE.value:
             print(">Block announce")
             self.blockchain.append(message["payload"])
+
+        elif int(message["OP"]) is ops.OpType.OP_BROADCAST_TX.value:
+            print(">Received Transaction")
+            self.mempool.append(message["payload"])
+            result = True
 
         return result
 

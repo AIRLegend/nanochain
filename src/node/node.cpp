@@ -90,9 +90,9 @@ void Node::requestTxs()
 
 
 // Server sub callbacks
-void Node::onNewBlock(const std::string new_block, networking::NetResponse& response) {
-    json blk_json = json::parse(new_block);
-    Block b = blockFromJSON(blk_json);
+void Node::onNewBlock(const json& new_block, networking::NetResponse& response) {
+    //json blk_json = json::parse(new_block);
+    Block b = blockFromJSON(new_block);
 
     // Attempt adding candiate block to the chain
     bool success = addBlock(b);
@@ -109,20 +109,22 @@ void Node::onNewBlock(const std::string new_block, networking::NetResponse& resp
     response.status = networking::MESSAGE_STATUS::OK;
 }
 
-void Node::onBlockRequest(const std::string block_hash, networking::NetResponse& response) {
-    if (block_hash.size() == 0) {
+void Node::onBlockRequest(const json& block_hash, networking::NetResponse& response) {
+    std::string hashblk = block_hash["hash"];
+
+    if (hashblk.size() == 0) {
         // Empty hash -> Return all blocks
         // TODO: This is crazy, for real usage this should be removed.
         response.data = blocksToJSON(this->m_chain);
         response.status = networking::MESSAGE_STATUS::OK;
-    } else if(block_hash.compare("-1") == 0){
+    } else if(hashblk.compare("-1") == 0){
         // Return only the latest accepted block
         Block b = m_chain.back();
         response.data = blockToJSON(b);
         response.status = networking::MESSAGE_STATUS::OK;
     } else {
         unsigned char hashbl[HASH_SIZE];
-        stringToBytes(block_hash, hashbl);
+        stringToBytes(hashblk, hashbl);
         auto blk = findBlock(hashbl);
         // TODO: Check nullptr
         response.data = blockToJSON(*blk);
@@ -130,14 +132,17 @@ void Node::onBlockRequest(const std::string block_hash, networking::NetResponse&
     }
 }
 
-void Node::onNewTx(const std::string newTx, networking::NetResponse& response) {
+void Node::onNewTx(const json& newTx, networking::NetResponse& response) {
     // TODO: Implement
     // Check everything seems correct
 
     // Add to the mempool
-    json json_tx = json::parse(newTx);
-    m_txpool.add(transactionFromJSON(json_tx));
+    spdlog::get("console")->info("[NODE] New TX added to the POOL");
+    //json json_tx = json::parse(newTx);
+    //std::cout << newTx << std::endl;
+    m_txpool.add(transactionFromJSON(newTx));
     response.status = networking::MESSAGE_STATUS::OK;
+    response.data = true;
 }
 
 void Node::onTxRequest(networking::NetResponse& response) {

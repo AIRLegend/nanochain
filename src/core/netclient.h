@@ -19,7 +19,6 @@ public:
 private:
     zmq::context_t ctx;
     zmq::socket_t sock_send;
-    std::string build_msg(const std::string &payload, OP_TYPE op);
 };
 
 }; //namespace networking

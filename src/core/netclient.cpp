@@ -1,5 +1,7 @@
 #include "core/netclient.h"
 
+#include <iostream>
+
 using namespace networking;
 
 SenderClient::SenderClient():
@@ -12,20 +14,13 @@ SenderClient::~SenderClient() {
     sock_send.close();
 }
 
-std::string SenderClient::build_msg(const std::string &payload, OP_TYPE op) {
-    json msg = {
-            {"payload", payload},
-            {"OP", op}
-    };
-    return msg.dump();
-}
-
 NetResponse SenderClient::send(const std::string data, OP_TYPE msg_type, const std::string address) {
     NetResponse net_response;
+    NetMessage net_mess(msg_type, data);
 
     sock_send.connect(address);
-    std::string msg = build_msg(data, msg_type);
 
+    std::string msg = to_string(net_mess);
     zmq::message_t message(msg.size());
     std::memcpy (message.data(), msg.data(), msg.size());
 
@@ -34,7 +29,7 @@ NetResponse SenderClient::send(const std::string data, OP_TYPE msg_type, const s
     std::vector<zmq::message_t> recv_msgs;
     zmq::message_t mes;
     std::string mes_str = "";
-    for (int attempts=0; attempts < 5; attempts++) {
+    for (int attempts=0; attempts < 2; attempts++) {
         //const auto ret = zmq::recv_multipart(sock_send, std::back_inserter(recv_msgs), zmq::recv_flags::dontwait);
         sock_send.recv(mes, zmq::recv_flags::dontwait);
         mes_str = mes.to_string();
@@ -42,7 +37,8 @@ NetResponse SenderClient::send(const std::string data, OP_TYPE msg_type, const s
         if (mes_str.size() > 0) {
             break;
         }
-        zmq_sleep(7);
+        // TODO: configurable timeout
+        zmq_sleep(2);
     }
 
     sock_send.disconnect(address);

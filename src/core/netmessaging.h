@@ -26,7 +26,15 @@ struct NetResponse {
     json data;
 };
 
+struct NetMessage {
+    OP_TYPE op;
+    json payload;
+
+    NetMessage(OP_TYPE opcode, std::string payload);
+};
+
 std::string to_string(NetResponse& resp);
+std::string to_string(NetMessage& message);
 
 }; //namespace networking
 #endif //NANOCHAIN_NETMESSAGING_H

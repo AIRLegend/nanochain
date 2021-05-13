@@ -24,6 +24,7 @@ void ListenServer::listen() {
     while(shouldListen) {
         std::vector<zmq::message_t> recv_msgs;
         const auto ret = zmq::recv_multipart(sock_listen, std::back_inserter(recv_msgs));
+
         if (!ret) {
             shouldListen = false;
             return;
@@ -53,13 +54,13 @@ void ListenServer::message_handler(const std::string &message,
 
     switch (msg_type) {
         case OP_BLOCK_REQ:            
-            sub->onBlockRequest(payload_json["hash"], response);
+            sub->onBlockRequest(payload_json["hash"].get<std::string>(), response);
             break;
         case OP_BLOCK_ANNOUNCE:
-            sub->onNewBlock(payload_json.dump(), response);
+            sub->onNewBlock(payload_json, response);
             break;
         case OP_BROADCAST_TX:
-            sub->onNewTx(payload_json.dump(), response);
+            sub->onNewTx(payload_json, response);
             break;
         case OP_MEMPOOL_REQUEST:
             sub->onTxRequest(response);
@@ -69,7 +70,7 @@ void ListenServer::message_handler(const std::string &message,
     }
 
     // send response
-    //
+    response.status = MESSAGE_STATUS::OK;
 }
 
 

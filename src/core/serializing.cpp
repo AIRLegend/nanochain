@@ -59,16 +59,15 @@ json blocksToJSON(const std::vector<Block> &blocks)
 // Recovering from JSON format
 Transaction transactionFromJSON(const json& obj)
 {
-    std::string from_str = obj["from"];
-    std::string to_str = obj["to"];
-    std::string signature_str = obj["signature"];
-    int amount = obj["amount"];
+    std::string from_str = obj["from"].get<std::string>();
+    std::string to_str = obj["to"].get<std::string>();
+    std::string signature_str = obj["signature"].get<std::string>();
+    int amount = obj["amount"].get<int>();
 
     unsigned char from[SIGNATURE_LEN];
     unsigned char to[SIGNATURE_LEN];
     stringToBytes(from_str, from);
     stringToBytes(to_str, to);
-
 
     Transaction tx(from, to, amount=amount);
     stringToBytes(signature_str, tx.m_signature);
@@ -77,8 +76,8 @@ Transaction transactionFromJSON(const json& obj)
 
 Block blockFromJSON(const json& obj)
 {
-    std::string bhash = obj["block_hash"];
-    std::string phash = obj["prev_hash"];
+    std::string bhash = obj["block_hash"].get<std::string>();
+    std::string phash = obj["prev_hash"].get<std::string>();
 
     Block b;
 

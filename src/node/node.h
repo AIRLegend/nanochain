@@ -42,9 +42,9 @@ public:
     /**
     * Server responses callbacks. (IServerSub)
     */
-    void onNewBlock(const std::string new_block, networking::NetResponse& response) override;
-    void onBlockRequest(const std::string block_hash, networking::NetResponse& response) override;
-    void onNewTx(const std::string new_tx, networking::NetResponse& response) override;
+    void onNewBlock(const json& new_block, networking::NetResponse& response) override;
+    void onBlockRequest(const json& block_hash, networking::NetResponse& response) override;
+    void onNewTx(const json& new_tx, networking::NetResponse& response) override;
     void onTxRequest(networking::NetResponse& response) override;
 
 private:

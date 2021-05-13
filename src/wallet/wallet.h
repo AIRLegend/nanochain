@@ -7,12 +7,15 @@
 
 #include "wallet/config.h"
 
+#include "spdlog/spdlog.h"
+
 
 class Wallet
 {
 public:
     Wallet(std::unique_ptr<Creedentials> creeds,
-           std::vector<NodePeer>& peers);
+           std::vector<NodePeer>& peers,
+           std::shared_ptr<spdlog::logger> logger = nullptr);
 
     void save(std::string& path);
     void load(std::string& path);
@@ -24,7 +27,9 @@ public:
 
 private:
     Transaction buildTransaction(std::string& to_addr, int amount);
-    bool broadcast(Transaction& tx);
+    bool broadcast(const Transaction& tx);
+
+    std::shared_ptr<spdlog::logger> m_logger;
 };
 
 #endif // NANOCHAIN_WALLET_H
