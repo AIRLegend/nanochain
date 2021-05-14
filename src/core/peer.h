@@ -6,10 +6,15 @@
 class NodePeer 
 {
 public:
+    NodePeer(const std::string& address, float reputation=10) {
+        this->address = address;
+    }
+
     std::string address;
+    float reputation;
 private:
     // TODO: used for tracking trustworthiness of the peer 
-    float reputation;
+    
 };
 
 #endif //NANOCHAIN_NODEPEER_H
