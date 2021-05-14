@@ -8,6 +8,10 @@
 #include <memory>
 #include <zmq_addon.hpp>
 
+#include "nodeconfig.h"
+
+#include "spdlog/spdlog.h"
+
 #include "core/netmessaging.h"
 
 using json = nlohmann::json;
@@ -26,7 +30,7 @@ public:
 class ListenServer {
 public:
 
-    ListenServer(std::string listen_address);
+    ListenServer(NodeConfig& conf, std::shared_ptr<spdlog::logger> logger);
     ~ListenServer();
 
     void start();
@@ -48,6 +52,8 @@ private:
     zmq::socket_t sock_listen;
 
     std::unique_ptr<std::thread> listener_thread;
+
+    std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

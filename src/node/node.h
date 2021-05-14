@@ -7,13 +7,14 @@
 #include "transaction_pool.h"
 #include "block_pool.h"
 #include "core/peer.h"
+#include "nodeconfig.h"
 
 #include "json.hpp"
 
 #include "listen_server.h"
 
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+
 
 using json = nlohmann::json;
 
@@ -21,7 +22,7 @@ class Node : public IServerSub
 {
 public:
 
-    Node(std::shared_ptr<spdlog::logger> logger = nullptr);
+    Node(const NodeConfig& conf, std::shared_ptr<spdlog::logger> logger);
     ~Node();
 
     bool validateBlock(const Block &blck);

@@ -57,6 +57,7 @@ add_executable(node
     src/node/block_pool.cpp
     src/node/listen_server.cpp
     src/node/transaction_pool.cpp
+    src/node/nodeconfig.cpp
     )
 
 # Miner program

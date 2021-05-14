@@ -8,11 +8,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/null_sink.h"
 
-Node::Node(std::shared_ptr<spdlog::logger> logger) {
-    if(logger == nullptr)
-        m_logger = spdlog::create<spdlog::sinks::null_sink_st>("null_logger");
-    else
-        m_logger = logger;
+Node::Node(const NodeConfig& conf, std::shared_ptr<spdlog::logger> logger) {
+    m_logger = logger;
 }
 
 Node::~Node() {}

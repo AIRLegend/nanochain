@@ -2,14 +2,17 @@
 #include "core/netmessaging.h"
 
 #include "spdlog/spdlog.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/null_sink.h"
 
 #include <iostream>
 
-ListenServer::ListenServer(std::string listen_address):
+ListenServer::ListenServer(NodeConfig& conf, 
+                           std::shared_ptr<spdlog::logger> logger):
     sock_listen(ctx, zmq::socket_type::rep),
-    listen_addr(listen_address)
+    listen_addr(conf.getListenAddr())
 {
-
+    m_logger = logger;
 }
 
 
@@ -19,7 +22,7 @@ ListenServer::~ListenServer() {
 
 
 void ListenServer::listen() {
-    spdlog::get("console")->info("[SERVER] Start listening");
+    m_logger->info("[SERVER] Start listening");
 
     while(shouldListen) {
         std::vector<zmq::message_t> recv_msgs;
@@ -30,7 +33,7 @@ void ListenServer::listen() {
             return;
         }
 
-        spdlog::get("console")->debug("[SERVER] Got a new message!");
+        m_logger->debug("[SERVER] Got a new message!");
 
         // PROC_MESSAGE
         networking::NetResponse response;
@@ -86,12 +89,12 @@ void ListenServer::stop() {
     //listener_thread->join();
     auto h = listener_thread->native_handle();
     pthread_cancel(h);
-    spdlog::get("console")->info("[SERVER] Stopped listening");
+    m_logger->info("[SERVER] Stopped listening");
 }
 
 void ListenServer::subscribe(std::shared_ptr<IServerSub> sub) {
     this->sub = sub;
-    spdlog::get("console")->info("[SERVER] Registered response handler.");
+    m_logger->info("[SERVER] Registered response handler.");
 }
 
 
