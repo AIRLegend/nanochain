@@ -6,9 +6,13 @@
 #include "core/netmessaging.h"
 
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/null_sink.h"
 
-Node::Node() {
-
+Node::Node(std::shared_ptr<spdlog::logger> logger) {
+    if(logger == nullptr)
+        m_logger = spdlog::create<spdlog::sinks::null_sink_st>("null_logger");
+    else
+        m_logger = logger;
 }
 
 Node::~Node() {}
@@ -45,8 +49,16 @@ bool Node::addBlock(const Block &blck) {
     else
         return false;
 
-    spdlog::get("console")->info("[NODE] New block "+ bytesToString(blck.b_hash) + " added to the chain");
+    m_logger->info("New block "+ bytesToString(blck.b_hash) + " added to the chain");
     return true;
+}
+
+void Node::registerPeer(NodePeer& peer) {
+    for(NodePeer& p : m_peers) {
+        if(p.address.compare(peer.address) == 0)
+            return;
+    }
+    this->m_peers.push_back(peer);
 }
 
 
@@ -78,7 +90,10 @@ void Node::requestTxs()
         for (json j : resp.data) {
             Transaction t = transactionFromJSON(j);
             m_txpool.add(t);
-            spdlog::get("console")->info("[NODE] New TX added to the POOL");
+
+            m_logger->info("New TX added to the POOL. From: " + bytesToString(t.m_from, 8) + 
+                            " To: " + bytesToString(t.m_to, 8) + 
+                            " Amount: " + std::to_string(t.getAmount()));
         }
         
     }
@@ -98,14 +113,14 @@ void Node::onNewBlock(const json& new_block, networking::NetResponse& response) 
     bool success = addBlock(b);
 
     if (!success) {
-        spdlog::get("console")->info("[NODE] Block " + bytesToString(b.b_hash) + " is not valid.");
+        m_logger->info("Block " + bytesToString(b.b_hash) + " is not valid.");
         response.status = networking::MESSAGE_STATUS::BAD;
         return;
     }
     
     // TODO: Remove transactions from the mempool
 
-    spdlog::get("console")->info("[NODE] New block added to the chain. Size: " +  m_chain.size());
+    m_logger->info("Block " + bytesToString(b.b_hash) + "added to the chain. Size: " +  std::to_string(m_chain.size()));
     response.status = networking::MESSAGE_STATUS::OK;
 }
 
@@ -137,10 +152,12 @@ void Node::onNewTx(const json& newTx, networking::NetResponse& response) {
     // Check everything seems correct
 
     // Add to the mempool
-    spdlog::get("console")->info("[NODE] New TX added to the POOL");
-    //json json_tx = json::parse(newTx);
-    //std::cout << newTx << std::endl;
-    m_txpool.add(transactionFromJSON(newTx));
+    Transaction tx = transactionFromJSON(newTx);
+    m_txpool.add(tx);
+    m_logger->info("New TX added to the POOL. From: " + bytesToString(tx.m_from, 8) + 
+                    " To: " + bytesToString(tx.m_to, 8) + 
+                    " Amount: " + std::to_string(tx.getAmount()));
+
     response.status = networking::MESSAGE_STATUS::OK;
     response.data = true;
 }

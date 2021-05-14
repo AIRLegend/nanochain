@@ -10,9 +10,6 @@ public:
 
     std::vector<Block> blocks;
 
-    // Dummy for easing development
-    Block generateBlock();
-
 private:
 
 };

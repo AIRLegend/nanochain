@@ -55,29 +55,3 @@ BlockPool::BlockPool() {
 
     blocks.push_back(std::move(block_1));
 }
-
-Block BlockPool::generateBlock() {
-    auto keypair_u1 = KeyFactory::buildKeyPair();
-    auto keypair_u2 = KeyFactory::buildKeyPair();
-
-    Block blck;
-    memset(blck.b_hash, 0, HASH_SIZE);
-    memset(blck.prev_hash, 0, HASH_SIZE);
-
-
-    // u1 pays u2 5 and signs
-    Transaction t1(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 5);
-    keypair_u1->privateKey->sign(t1.m_signature, (unsigned char*)&t1, sizeof(t1));
-
-    // u1 pays u3 10
-    Transaction t2(keypair_u1->publicKey->m_bytes, keypair_u2->publicKey->m_bytes, 10);
-    keypair_u1->privateKey->sign(t2.m_signature, (unsigned char*)&t2, sizeof(t2));
-
-    blck.txs.push_back(t1);
-    blck.txs.push_back(t2);
-
-    sha256(&blck, blck.b_hash, sizeof(blck));
-    memcpy(blck.prev_hash, blocks.back().b_hash, HASH_SIZE);
-
-    return blck;
-}

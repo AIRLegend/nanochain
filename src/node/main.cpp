@@ -8,14 +8,13 @@
 #include <memory>
 #include<unistd.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-
 int main()
 {
     // Setting up logger
-    auto console = spdlog::stdout_color_mt("console");
-    spdlog::get("console")->info("Starting up a Nanochain Node");
+    auto console = spdlog::stdout_color_mt("nanonode");
+    spdlog::get("nanonode")->info("Starting up a Nanochain Node");
+    std::shared_ptr<spdlog::logger> logger = spdlog::get("nanonode");
+
 
     // TODO: Hardcoded peers
     NodePeer peer;
@@ -24,8 +23,8 @@ int main()
     
     Node n;
     std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);
-
-    //n.m_peers.push_back(peer);
+    
+    //n.registerPeer(peer);
     
     ListenServer server("tcp://0.0.0.0:5557");
     server.subscribe(node_ptr);

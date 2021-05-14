@@ -12,13 +12,16 @@
 
 #include "listen_server.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 using json = nlohmann::json;
 
 class Node : public IServerSub
 {
 public:
 
-    Node();
+    Node(std::shared_ptr<spdlog::logger> logger = nullptr);
     ~Node();
 
     bool validateBlock(const Block &blck);
@@ -28,8 +31,9 @@ public:
     TransactionPool m_txpool;
     std::vector<Block> m_chain;
 
-    std::vector<NodePeer> m_peers;
-    
+    void registerPeer(NodePeer& peer);
+
+
     /**
     * Client methods (for talking to other nodes)
     */
@@ -37,7 +41,6 @@ public:
     void requestBlocks();
     // Asks for the mempool of other nodes
     void requestTxs();
-
 
     /**
     * Server responses callbacks. (IServerSub)
@@ -49,6 +52,10 @@ public:
 
 private:
     const std::shared_ptr<Block> findBlock(const unsigned char *hash);
+
+    std::vector<NodePeer> m_peers;
+
+    std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

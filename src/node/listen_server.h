@@ -15,9 +15,11 @@ using json = nlohmann::json;
 class IServerSub 
 {
 public:
+    // Requests adding stuff to the server
     virtual void onNewBlock(const json& new_block, networking::NetResponse& response) = 0;
-    virtual void onBlockRequest(const json& block_hash, networking::NetResponse& response) = 0;
     virtual void onNewTx(const json& new_tx, networking::NetResponse& response) = 0;
+    // Requests asking for data
+    virtual void onBlockRequest(const json& block_hash, networking::NetResponse& response) = 0;
     virtual void onTxRequest(networking::NetResponse& response) = 0;
 };
 
