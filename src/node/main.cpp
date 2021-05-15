@@ -30,7 +30,6 @@ int main()
 
     // TODO: Hardcoded peers
     NodePeer peer("tcp://127.0.0.1:5556");
-
     
     Node n(conf, logger);
     std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);

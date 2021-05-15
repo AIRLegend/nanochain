@@ -9,10 +9,10 @@
 
 ListenServer::ListenServer(NodeConfig& conf, 
                            std::shared_ptr<spdlog::logger> logger):
-    sock_listen(ctx, zmq::socket_type::rep),
-    listen_addr(conf.getListenAddr())
+    sock_listen(ctx, zmq::socket_type::rep)
 {
     m_logger = logger;
+    listen_addr = conf.getListenAddr() + ":" + std::to_string(conf.getListenPort());
 }
 
 
