@@ -16,10 +16,7 @@ Wallet::Wallet(std::unique_ptr<Creedentials> creeds,
     m_nodes(peers)
 {
     m_creeds = std::move(creeds);
-    if(logger == nullptr)
-        m_logger = spdlog::create<spdlog::sinks::null_sink_st>("null_logger");
-    else
-        m_logger = logger;
+    m_logger = logger;
 }
 
 bool Wallet::pay(std::string& to_addr, int amount) 

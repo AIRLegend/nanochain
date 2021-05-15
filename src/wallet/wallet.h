@@ -15,7 +15,7 @@ class Wallet
 public:
     Wallet(std::unique_ptr<Creedentials> creeds,
            std::vector<NodePeer>& peers,
-           std::shared_ptr<spdlog::logger> logger = nullptr);
+           std::shared_ptr<spdlog::logger> logger);
 
     void save(std::string& path);
     void load(std::string& path);
