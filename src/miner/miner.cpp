@@ -20,10 +20,11 @@ void Miner::requestMempool() {
     networking::SenderClient client;
     for (NodePeer& peer: m_peers) {
         networking::NetResponse resp = client.send("{}", networking::OP_TYPE::OP_MEMPOOL_REQUEST, peer.address);
+        std::cout << resp.data.dump() << std::endl;
         for (json j : resp.data) {
             Transaction t = transactionFromJSON(j);
             m_mempool.add(t);
-            spdlog::get("nanominer")->info("New TX added to the POOL");
+            spdlog::get("nanominer")->info("New TX added to the POOL: " + bytesToString(t.m_from, 16) + " SIZE: " + std::to_string(m_mempool.m_txs.size()));
         }
     }
 }
@@ -63,6 +64,16 @@ void Miner::broadcastBlock()
 
 void Miner::mine()  {
     auto logger = spdlog::get("nanominer");
+
+    if (m_mempool.m_txs.size() < 1) {
+        logger->info("Not enough transactions in the mempool. Not mining");
+        return;
+    }
+
+    // TODO: Extract to method
+    // We may want to sort the most interesting txs (ordered by fee)
+    m_candidate.txs = m_mempool.m_txs;
+    logger->info("BUILT BLOCK SIZE size: " + std::to_string(m_candidate.txs.size()));
 
     unsigned char current_hash[HASH_SIZE];
     for(int nonce=INT_MIN; nonce<INT_MAX; nonce++) {

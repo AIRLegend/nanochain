@@ -57,6 +57,11 @@ private:
     std::vector<NodePeer> m_peers;
 
     std::shared_ptr<spdlog::logger> m_logger;
+
+    /**
+     * Clears all the mempool transactions which are present on the block.
+     */
+    void filterMempool(Block& block);
 };
 
 

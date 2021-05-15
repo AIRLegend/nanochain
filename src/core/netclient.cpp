@@ -51,7 +51,7 @@ NetResponse SenderClient::send(const std::string data, OP_TYPE msg_type, const s
         //std::string response = recv_msgs[0].to_string();
         json resp_json = json::parse(mes_str);
         net_response.status = resp_json["status"];
-        net_response.data = resp_json["payload"];
+        net_response.data = resp_json["data"];
     }
 
     return net_response;

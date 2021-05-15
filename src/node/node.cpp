@@ -26,6 +26,14 @@ const std::shared_ptr<Block> Node::findBlock(const unsigned char *hash)
     return nullptr;
 }
 
+void Node::filterMempool(Block& block) 
+{
+    for (Transaction& tx : block.txs) {
+        if(m_txpool.remove(tx))
+            m_logger->debug("TX: " + bytesToString(tx.m_from) + " removed from mempool as it has been included in a block.");
+    }
+}
+
 bool Node::validateBlock(const Block &blck) {
     //std::shared_ptr<Block> prevbBockMatch = findBlock(blck.prev_hash);
     //if (prevbBockMatch == nullptr)
@@ -115,7 +123,8 @@ void Node::onNewBlock(const json& new_block, networking::NetResponse& response) 
         return;
     }
     
-    // TODO: Remove transactions from the mempool
+    // Remove transactions from the mempool
+    filterMempool(b);
 
     m_logger->info("Block " + bytesToString(b.b_hash) + "added to the chain. Size: " +  std::to_string(m_chain.size()));
     response.status = networking::MESSAGE_STATUS::OK;
@@ -146,13 +155,13 @@ void Node::onBlockRequest(const json& block_hash, networking::NetResponse& respo
 
 void Node::onNewTx(const json& newTx, networking::NetResponse& response) {
     // TODO: Implement
-    // Check everything seems correct
+    // Check everything is correct
 
     // Add to the mempool
     Transaction tx = transactionFromJSON(newTx);
     m_txpool.add(tx);
-    m_logger->info("New TX added to the POOL. From: " + bytesToString(tx.m_from, 8) + 
-                    " To: " + bytesToString(tx.m_to, 8) + 
+    m_logger->info("New TX added to the POOL. From: " + bytesToString(tx.m_from, 16) + 
+                    " To: " + bytesToString(tx.m_to, 16) + 
                     " Amount: " + std::to_string(tx.getAmount()));
 
     response.status = networking::MESSAGE_STATUS::OK;

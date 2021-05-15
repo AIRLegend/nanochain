@@ -17,6 +17,7 @@ int main()
     auto console = spdlog::stdout_color_mt("nanonode");
     spdlog::get("nanonode")->info("Starting up a Nanochain Node");
     std::shared_ptr<spdlog::logger> logger = spdlog::get("nanonode");
+    logger->set_level(spdlog::level::debug);
 
     // Load or create config
     // TODO: Pass custom conf path via arguments
@@ -28,12 +29,11 @@ int main()
         conf.save("nodeconf.json");
     }
 
-    // TODO: Hardcoded peers
-    NodePeer peer("tcp://127.0.0.1:5556");
-    
     Node n(conf, logger);
     std::shared_ptr<IServerSub> node_ptr = std::make_shared<Node>(n);
     
+    // TODO: Hardcoded peers
+    NodePeer peer("tcp://127.0.0.1:5556");
     //n.registerPeer(peer);
     
     ListenServer server(conf, logger);

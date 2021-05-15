@@ -13,8 +13,7 @@ int main() {
     Miner miner;
 
     // TODO: Hardcoded peers
-    NodePeer peer;
-    peer.address = "tcp://127.0.0.1:5556";
+    NodePeer peer("tcp://127.0.0.1:5557");
     miner.addPeer(peer);
     
     while(true) {
