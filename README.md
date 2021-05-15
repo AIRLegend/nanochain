@@ -47,3 +47,22 @@ Program which queries the nodes for new transactions and creates (and broadcasts
 
 ### wallet
 Little utility for creating and broadcasting transactions.
+
+
+## Playing with it
+After building, simply start a node with 
+```
+./build/bin/node
+````
+
+It will start listening for transactions. Then, you can send a dummy TX running the wallet program.
+
+```
+./build/bin/wallet
+```
+
+The transaction will be registered on the node's mempool. Then, run the miner for retreiving it and creating a new block. The block will also be broadcasted to the node.
+
+```
+./build/bin/miner
+```
