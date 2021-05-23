@@ -7,17 +7,17 @@ import time
 
 
 def main():
-    # with open('../resources/msg_new_block.json', 'r') as file:
-    #     data = json.load(file)
-    #
-    # client = Client(endpoint="tcp://localhost:5556")
-    # client.request(data)
-    server = NodeServer('../resources/blockchain_test.json')
-    server.start()
+    with open('../resources/balance_req.json', 'r') as file:
+        data = json.load(file)
 
-    time.sleep(200)
+    client = Client(endpoint="tcp://localhost:5557")
+    client.request(data)
+    #server = NodeServer('../resources/blockchain_test.json')
+    #server.start()
 
-    server.stop()
+    #time.sleep(200)
+
+    #server.stop()
 
 
 

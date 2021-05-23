@@ -29,6 +29,12 @@ void Miner::requestMempool() {
     }
 }
 
+void Miner::requestLatestHash() 
+{
+    // TODO: Request latest block hash and set it in m_candidate
+    return;
+}
+
 void Miner::startMining()  {
     if(!m_should_mine) {
         m_should_mine = true;

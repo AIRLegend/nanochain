@@ -24,6 +24,7 @@ public:
     virtual void onNewTx(const json& new_tx, networking::NetResponse& response) = 0;
     // Requests asking for data
     virtual void onBlockRequest(const json& block_hash, networking::NetResponse& response) = 0;
+    virtual void onBalanceRequest(const json& address, networking::NetResponse& response) = 0;
     virtual void onTxRequest(networking::NetResponse& response) = 0;
 };
 

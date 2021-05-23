@@ -6,6 +6,9 @@
 class Transaction
 {
 public:
+
+    static const int SIGLEN = SIGNATURE_LEN;
+
     Transaction(unsigned char* from,
                 unsigned char* to,
                 uint64_t amount=0);

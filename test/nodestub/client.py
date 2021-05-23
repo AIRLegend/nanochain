@@ -11,7 +11,7 @@ class Client:
         socket = context.socket(zmq.REQ)
         socket.connect(self.endpoint)
 
-        print("Sending block")
+        # print("Sending block")
         raw_data = json.dumps(payload)
         socket.send_string(raw_data)
 

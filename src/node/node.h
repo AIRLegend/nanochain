@@ -2,6 +2,7 @@
 #define NANOCHAIN_NODE_H
 
 #include <memory>
+#include <unordered_map>
 
 #include "core/block.h"
 #include "transaction_pool.h"
@@ -50,6 +51,7 @@ public:
     void onBlockRequest(const json& block_hash, networking::NetResponse& response) override;
     void onNewTx(const json& new_tx, networking::NetResponse& response) override;
     void onTxRequest(networking::NetResponse& response) override;
+    void onBalanceRequest(const json& address, networking::NetResponse& response) override;
 
 private:
     const std::shared_ptr<Block> findBlock(const unsigned char *hash);
@@ -58,10 +60,14 @@ private:
 
     std::shared_ptr<spdlog::logger> m_logger;
 
+    std::unordered_map<std::string, int> m_balances;
+
     /**
      * Clears all the mempool transactions which are present on the block.
      */
     void filterMempool(Block& block);
+
+    void updateBalances();
 };
 
 

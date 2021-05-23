@@ -17,6 +17,7 @@ public:
     Miner();
     void addPeer(NodePeer& peer);
     void requestMempool();
+    void requestLatestHash();
     void startMining();
     void stopMining();
     void broadcastBlock();

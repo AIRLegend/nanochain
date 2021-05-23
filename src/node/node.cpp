@@ -34,13 +34,45 @@ void Node::filterMempool(Block& block)
     }
 }
 
+void Node::updateBalances() 
+{
+    for (Block& blk: m_chain) {
+        for (Transaction& tx: blk.txs) {
+            std::string from = bytesToString(tx.m_from, SIGNATURE_LEN);
+            std::string to = bytesToString(tx.m_to, SIGNATURE_LEN);
+
+            if(m_balances.find(to) == m_balances.end())
+                m_balances[to] = 100;  // TODO: Hardcoded initial balance for all accounts
+            if(m_balances.find(from) == m_balances.end())
+                m_balances[from] = 100;  // TODO: Hardcoded initial balance for all accounts
+
+            m_balances[to] += tx.getAmount();
+            m_balances[from] -= tx.getAmount();
+
+        }
+    }
+}
+
 bool Node::validateBlock(const Block &blck) {
+    // Check new block points to the latest one
     //std::shared_ptr<Block> prevbBockMatch = findBlock(blck.prev_hash);
     //if (prevbBockMatch == nullptr)
     //    return false;
 
     // Matching block found
     // TODO: Check blck data
+
+    // Check all transactions are valid
+    for (const Transaction& tx: blck.txs) {
+        std::string from = bytesToString(tx.m_from, SIGNATURE_LEN);
+        std::string to = bytesToString(tx.m_to, SIGNATURE_LEN);
+
+        if (m_balances.find(from) == m_balances.end())
+            m_balances[from] = 100;   // TODO: Hardcoded initial balance
+
+        if(m_balances[from] - tx.getAmount() < 0)
+            return false;
+    }
 
     // If block is valid
     // Remove block transactions from pool
@@ -50,7 +82,10 @@ bool Node::validateBlock(const Block &blck) {
 bool Node::addBlock(const Block &blck) {
     bool is_valid = validateBlock(blck);
     if(is_valid)
+    {
         m_chain.push_back(blck);
+        updateBalances();
+    }
     else
         return false;
 
@@ -172,4 +207,13 @@ void Node::onTxRequest(networking::NetResponse& response) {
     // TODO: Return the entire mempool
     response.data = transactionsToJSON(m_txpool.getTxs());
     response.status = networking::MESSAGE_STATUS::OK;
+}
+
+void Node::onBalanceRequest(const json& address, networking::NetResponse& response) 
+{
+    std::string addr = address["address"];
+    int amount = -1;
+    if(m_balances.find(addr) != m_balances.end())
+        amount = m_balances["addr"];
+    response.data = {{"balance", amount}, {"address", addr}}; 
 }

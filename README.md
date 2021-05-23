@@ -66,3 +66,14 @@ The transaction will be registered on the node's mempool. Then, run the miner fo
 ```
 ./build/bin/miner
 ```
+
+## //TODO
+
+Several things could be added in order to take this to a more mature state:
+
+- **Persistent storage**: At least, `node` must have a persistent storage layer. Right now the data is only on memory and will be lost on restart. Probably connecting it to a local DB like MariaDB or PostgreSQL it's the best way.
+
+- **GUI**: Wallet should be GUI based because it must be user-friendly.
+
+- **CLI commands**: Node could have a separate thread for receiving administration/query commands. Other alternative could be having a client using ZMQ for sending messages to the node's listen endpoint.
+

@@ -68,6 +68,9 @@ void ListenServer::message_handler(const std::string &message,
         case OP_MEMPOOL_REQUEST:
             sub->onTxRequest(response);
             break;
+        case OP_BALANCE_REQUEST:
+            sub->onBalanceRequest(payload_json, response);
+            break;
         default:
             break;
     }
