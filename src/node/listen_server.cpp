@@ -57,7 +57,7 @@ void ListenServer::message_handler(const std::string &message,
 
     switch (msg_type) {
         case OP_BLOCK_REQ:            
-            sub->onBlockRequest(payload_json["hash"].get<std::string>(), response);
+            sub->onBlockRequest(payload_json, response);
             break;
         case OP_BLOCK_ANNOUNCE:
             sub->onNewBlock(payload_json, response);

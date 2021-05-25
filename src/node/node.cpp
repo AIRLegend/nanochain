@@ -48,7 +48,7 @@ void Node::updateBalances()
 
             m_balances[to] += tx.getAmount();
             m_balances[from] -= tx.getAmount();
-
+            m_logger->debug("FROM: " + from.substr(0, 10) + " balance: " + std::to_string(m_balances[from]) + "-- TO: " + to.substr(0, 10) + " balance: " + std::to_string(m_balances[to]));
         }
     }
 }
@@ -85,11 +85,11 @@ bool Node::addBlock(const Block &blck) {
     {
         m_chain.push_back(blck);
         updateBalances();
+        m_logger->info("New block "+ bytesToString(blck.b_hash) + " added to the chain");
     }
     else
         return false;
 
-    m_logger->info("New block "+ bytesToString(blck.b_hash) + " added to the chain");
     return true;
 }
 
@@ -166,14 +166,14 @@ void Node::onNewBlock(const json& new_block, networking::NetResponse& response) 
 }
 
 void Node::onBlockRequest(const json& block_hash, networking::NetResponse& response) {
-    std::string hashblk = block_hash["hash"];
-
+    std::string hashblk = block_hash["hash"].get<std::string>();
+    
     if (hashblk.size() == 0) {
         // Empty hash -> Return all blocks
         // TODO: This is crazy, for real usage this should be removed.
         response.data = blocksToJSON(this->m_chain);
         response.status = networking::MESSAGE_STATUS::OK;
-    } else if(hashblk.compare("-1") == 0){
+    } else if(hashblk.compare("-1") == 0){  // TODO: possibly breaks
         // Return only the latest accepted block
         Block b = m_chain.back();
         response.data = blockToJSON(b);
@@ -213,7 +213,7 @@ void Node::onBalanceRequest(const json& address, networking::NetResponse& respon
 {
     std::string addr = address["address"];
     int amount = -1;
-    if(m_balances.find(addr) != m_balances.end())
+    if(m_balances.find(addr) == m_balances.end())
         amount = m_balances["addr"];
     response.data = {{"balance", amount}, {"address", addr}}; 
 }
