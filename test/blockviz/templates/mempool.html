@@ -1,0 +1,9 @@
+<!doctype html>
+<h1>Mempool state</h1>
+
+{% for tx in transactions %}
+    {% with transaction=tx %}
+        {% include "transaction.html" %}<br/>
+    {% endwith %}
+
+{% endfor %}
