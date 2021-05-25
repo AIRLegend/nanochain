@@ -13,10 +13,11 @@ class Client:
 
         # print("Sending block")
         raw_data = json.dumps(payload)
-        socket.send_string(raw_data)
+        socket.send(str.encode(raw_data))
 
         message = socket.recv()
         print("Received reply")
         print(message)
 
         socket.close()
+        return message

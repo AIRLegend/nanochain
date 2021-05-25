@@ -1,0 +1,18 @@
+<!doctype html>
+
+{% for block in blocks %}
+    <div class='block'>
+        Hash: {{block['block_hash']}}<br/>
+        PrevHash: {{block['prev_hash']}}<br/>
+        <ul>
+        {% for tx in block['txs'] %}
+            <li>
+                {% with transaction=tx %}
+                    {% include "transaction.html" %}
+                {% endwith %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+{% endfor %}
