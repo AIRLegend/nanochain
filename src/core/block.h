@@ -15,11 +15,6 @@ public:
     uint8_t num_tx = 0;
     unsigned long int creation_time;
     int nonce;
-
-    /*void print(int len_hex = 30);
-    std::string toString();
-    std::string toJSON();
-    friend std::ostream& operator<<(std::ostream& os, const block& dt);*/
 };
 
 
