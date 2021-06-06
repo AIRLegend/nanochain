@@ -5,6 +5,11 @@
 
 #include "core/transaction.h"
 
+/**
+ * It is, basically, the mempool.
+ * It holds all the transactions which have not been included in blocks yet.
+ * The miner will grab them from here and include in their produced blocks.
+ */
 class TransactionPool {
 public:
     TransactionPool();

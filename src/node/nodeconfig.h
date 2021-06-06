@@ -3,6 +3,10 @@
 
 #include <string>
 
+/**
+ * Class containing the configuration of a node.
+ * Contains logic for serializing/deserializting it.
+ */
 class NodeConfig
 {
 public:
