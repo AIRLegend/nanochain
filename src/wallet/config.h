@@ -9,6 +9,9 @@
 
 using json = nlohmann::json;
 
+/**
+ * Logic for maintaingin the creedentials and the configuration of the wallet. 
+ */
 class Creedentials {
 public:
     std::shared_ptr<KeyPair> m_keypair;
